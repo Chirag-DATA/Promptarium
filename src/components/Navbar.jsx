@@ -26,9 +26,8 @@ const Navbar = () => {
       <div className="mx-auto flex max-w-7xl items-center justify-between h-16">
         <div className="flex items-center gap-2">
           <span className="text-xl font-bold text-blue-600">
-            PromptVault
+            PromptHub
           </span>
-          <span className="text-xl font-light text-gray-400">AI</span>
         </div>
 
         <div className="hidden md:flex items-center gap-8">
