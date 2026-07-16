@@ -1,16 +1,19 @@
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
-import DashboardLayout from "./layouts/DashboardLayout";
+import { AuthProvider } from "./context/AuthContext";
+import { PromptsProvider } from "./context/PromptsContext";
 import AppRoutes from "./routes/AppRoutes";
 
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <DashboardLayout>
-          <AppRoutes />
-        </DashboardLayout>
-      </BrowserRouter>
+      <AuthProvider>
+        <PromptsProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </PromptsProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

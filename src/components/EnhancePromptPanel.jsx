@@ -40,7 +40,7 @@ const EnhancePromptPanel = ({ promptText, onApply }) => {
     return (
       <div className="rounded-md border border-dashed border-gray-300 dark:border-gray-700 p-3 text-sm text-gray-500 dark:text-gray-400">
         Add a Gemini API key in{" "}
-        <Link to="/settings" className="text-blue-600 hover:underline">
+        <Link to="/dashboard/settings" className="text-blue-600 hover:underline">
           Settings
         </Link>{" "}
         to enable AI enhancement.

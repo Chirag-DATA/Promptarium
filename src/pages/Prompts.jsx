@@ -38,6 +38,7 @@ const Prompts = () => {
   const {
     isModalOpen,
     editingPrompt,
+    error,
     openCreateModal,
     openEditModal,
     closeModal,
@@ -111,13 +112,18 @@ const Prompts = () => {
         onClose={closeModal}
         title={editingPrompt ? "Edit Prompt" : "New Prompt"}
       >
-        <PromptForm
+        {error && (
+          <p className="mb-3 text-sm text-red-500 bg-red-50 dark:bg-red-950 rounded-md px-3 py-2">
+            {error}
+          </p>
+        )}
+        <PromptForm 
           initialValues={editingPrompt}
           onSubmit={handleSubmit}
           onCancel={closeModal}
           submitLabel={editingPrompt ? "Save Changes" : "Create Prompt"}
         />
-      </Modal>
+     </Modal>
     </div>
   );
 };

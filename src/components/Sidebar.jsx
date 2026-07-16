@@ -1,11 +1,11 @@
 import { NavLink } from "react-router-dom";
 
 const SIDEBAR_LINKS = [
-  { label: "Dashboard", icon: "📊", to: "/" },
-  { label: "Prompts", icon: "📝", to: "/prompts" },
-  { label: "Favorites", icon: "⭐", to: "/favorites" },
-  { label: "Categories", icon: "🗂️", to: "/categories" },
-  { label: "Settings", icon: "⚙️", to: "/settings" },
+  { label: "Dashboard", icon: "📊", to: "/dashboard" },
+  { label: "Prompts", icon: "📝", to: "/dashboard/prompts" },
+  { label: "Favorites", icon: "⭐", to: "/dashboard/favorites" },
+  { label: "Categories", icon: "🗂️", to: "/dashboard/categories" },
+  { label: "Settings", icon: "⚙️", to: "/dashboard/settings" },
 ];
 
 const Sidebar = () => {
@@ -16,7 +16,7 @@ const Sidebar = () => {
           <NavLink
             key={link.label}
             to={link.to}
-            end={link.to === "/"}
+            end={link.to === "/dashboard"}
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                 isActive

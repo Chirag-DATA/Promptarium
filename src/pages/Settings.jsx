@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useApiKey } from "../hooks/useApiKey";
+import ProfileSection from "../components/ProfileSection";
 
 const Settings = () => {
   const { apiKey, setApiKey } = useApiKey();
   const [inputValue, setInputValue] = useState(apiKey);
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    setInputValue(apiKey);
+  }, [apiKey]);
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -20,6 +25,8 @@ const Settings = () => {
 
   return (
     <div className="max-w-lg">
+      <ProfileSection />
+
       <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Settings</h1>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
         Add your own Gemini API key to enable AI-powered prompt enhancement.
@@ -59,7 +66,7 @@ const Settings = () => {
 
       <p className="mt-6 text-xs text-gray-400">
         Don't have a key? Get one for free from{" "}
-          <a
+        <a
           href="https://aistudio.google.com/apikey"
           target="_blank"
           rel="noopener noreferrer"

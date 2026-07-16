@@ -18,6 +18,7 @@ const Favorites = () => {
   const {
     isModalOpen,
     editingPrompt,
+    error,
     openEditModal,
     closeModal,
     handleSubmit,
@@ -60,6 +61,11 @@ const Favorites = () => {
       )}
 
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Edit Prompt">
+        {error && (
+          <p className="mb-3 text-sm text-red-500 bg-red-50 dark:bg-red-950 rounded-md px-3 py-2">
+            {error}
+          </p>
+        )}
         <PromptForm
           initialValues={editingPrompt}
           onSubmit={handleSubmit}
