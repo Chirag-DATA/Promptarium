@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 const ProfileSection = () => {
-  const { user, updateProfile, uploadPhoto } = useAuth();
+  const { user, isAuthenticated, updateProfile, uploadPhoto } = useAuth();
   const fileInputRef = useRef(null);
 
   const [username, setUsername] = useState(user?.username || "");
@@ -47,6 +48,24 @@ const ProfileSection = () => {
       e.target.value = "";
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-lg mb-10 rounded-md border border-dashed border-gray-300 dark:border-gray-700 p-4">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          Profile
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          You're browsing as a guest. A username and profile photo are saved
+          to your account, so{" "}
+          <Link to="/login" className="text-blue-600 hover:underline">
+            log in or sign up
+          </Link>{" "}
+          to set one up.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-lg mb-10">

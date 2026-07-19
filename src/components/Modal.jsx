@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { X } from "lucide-react";
 
 const Modal = ({ isOpen, onClose, title, children }) => {
   useEffect(() => {
@@ -41,7 +42,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             aria-label="Close modal"
             className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
           >
-            ✕
+            <X size={18} />
           </button>
         </div>
 

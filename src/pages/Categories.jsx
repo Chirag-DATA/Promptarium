@@ -5,6 +5,8 @@ import { PROMPT_CATEGORIES } from "../constants/promptCategories";
 import Modal from "../components/Modal";
 import PromptForm from "../components/PromptForm";
 import PromptCard from "../components/PromptCard";
+import { usePromptViewer } from "../hooks/usePromptViewer";
+import PromptViewModal from "../components/PromptViewModal";
 
 const Categories = () => {
   const {
@@ -25,6 +27,8 @@ const Categories = () => {
     handleSubmit,
     handleDelete,
   } = usePromptEditor({ updatePrompt, deletePrompt });
+
+  const { viewingPrompt, openViewer, closeViewer } = usePromptViewer();
 
   const [activeCategory, setActiveCategory] = useState(null);
 
@@ -98,6 +102,7 @@ const Categories = () => {
               onToggleArchive={toggleArchive}
               onDelete={handleDelete}
               onEdit={openEditModal}
+              onView={openViewer}
             />
           ))}
         </div>
@@ -116,6 +121,14 @@ const Categories = () => {
           submitLabel="Save Changes"
         />
       </Modal>
+      <PromptViewModal
+        prompt={viewingPrompt}
+        onClose={closeViewer}
+        onEdit={(prompt) => {
+          closeViewer();
+          openEditModal(prompt);
+        }}
+      />
     </div>
   );
 };

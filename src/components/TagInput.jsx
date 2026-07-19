@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { X } from "lucide-react";
 
 const TagInput = ({ tags, onChange }) => {
   const [inputValue, setInputValue] = useState("");
@@ -39,7 +40,7 @@ const TagInput = ({ tags, onChange }) => {
             className="text-blue-400 hover:text-blue-700 dark:hover:text-blue-200"
             aria-label={`Remove ${tag} tag`}
           >
-            ✕
+            <X size={12} />
           </button>
         </span>
       ))}

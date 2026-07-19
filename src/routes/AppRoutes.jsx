@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import RootRedirect from "../components/RootRedirect";
+import Landing from "../pages/Landing";
 import Dashboard from "../pages/Dashboard";
 import Prompts from "../pages/Prompts";
 import Favorites from "../pages/Favorites";
@@ -8,64 +8,53 @@ import Settings from "../pages/Settings";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import NotFound from "../pages/NotFound";
-import ProtectedRoute from "../components/ProtectedRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<RootRedirect />} />
+      <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <Dashboard />
-            </DashboardLayout>
-          </ProtectedRoute>
+          <DashboardLayout>
+            <Dashboard />
+          </DashboardLayout>
         }
       />
       <Route
         path="/dashboard/prompts"
         element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <Prompts />
-            </DashboardLayout>
-          </ProtectedRoute>
+          <DashboardLayout>
+            <Prompts />
+          </DashboardLayout>
         }
       />
       <Route
         path="/dashboard/favorites"
         element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <Favorites />
-            </DashboardLayout>
-          </ProtectedRoute>
+          <DashboardLayout>
+            <Favorites />
+          </DashboardLayout>
         }
       />
       <Route
         path="/dashboard/categories"
         element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <Categories />
-            </DashboardLayout>
-          </ProtectedRoute>
+          <DashboardLayout>
+            <Categories />
+          </DashboardLayout>
         }
       />
       <Route
         path="/dashboard/settings"
         element={
-          <ProtectedRoute>
-            <DashboardLayout>
-              <Settings />
-            </DashboardLayout>
-          </ProtectedRoute>
+          <DashboardLayout>
+            <Settings />
+          </DashboardLayout>
         }
       />
 

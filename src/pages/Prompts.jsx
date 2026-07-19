@@ -8,6 +8,8 @@ import SearchBar from "../components/SearchBar";
 import FilterPanel from "../components/FilterPanel";
 import ExportMenu from "../components/ExportMenu";
 import ImportButton from "../components/ImportButton";
+import { usePromptViewer } from "../hooks/usePromptViewer";
+import PromptViewModal from "../components/PromptViewModal";
 
 const Prompts = () => {
   const {
@@ -34,6 +36,8 @@ const Prompts = () => {
     STATUS_FILTERS,
     SORT_OPTIONS,
   } = usePromptFilters(prompts);
+
+  const { viewingPrompt, openViewer, closeViewer } = usePromptViewer();
 
   const {
     isModalOpen,
@@ -102,6 +106,7 @@ const Prompts = () => {
               onToggleArchive={toggleArchive}
               onDelete={handleDelete}
               onEdit={openEditModal}
+              onView={openViewer}
             />
           ))}
         </div>
@@ -124,6 +129,14 @@ const Prompts = () => {
           submitLabel={editingPrompt ? "Save Changes" : "Create Prompt"}
         />
      </Modal>
+     <PromptViewModal
+      prompt={viewingPrompt}
+      onClose={closeViewer}
+      onEdit={(prompt) => {
+        closeViewer();
+        openEditModal(prompt);
+      }}
+    />
     </div>
   );
 };

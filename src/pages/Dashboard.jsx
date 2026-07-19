@@ -3,6 +3,8 @@ import { usePrompts } from "../hooks/usePrompts";
 import StatCard from "../components/StatCard";
 import RecentPromptsList from "../components/RecentPromptsList";
 import CategoryBreakdown from "../components/CategoryBreakdown";
+import { FileText, Star, Pin, Archive } from "lucide-react";
+
 
 const Dashboard = () => {
   const { prompts } = usePrompts();
@@ -45,10 +47,10 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Prompts" value={stats.total} icon="📝" />
-        <StatCard label="Favorites" value={stats.favorites} icon="⭐" />
-        <StatCard label="Pinned" value={stats.pinned} icon="📌" />
-        <StatCard label="Archived" value={stats.archived} icon="🗂️" />
+        <StatCard label="Total Prompts" value={stats.total} icon={<FileText size={20} />} />
+        <StatCard label="Favorites" value={stats.favorites} icon={<Star size={20} />} />
+        <StatCard label="Pinned" value={stats.pinned} icon={<Pin size={20} />} />
+        <StatCard label="Archived" value={stats.archived} icon={<Archive size={20} />} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

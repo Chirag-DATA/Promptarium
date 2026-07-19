@@ -5,9 +5,13 @@ const PromptCard = ({
   onToggleArchive,
   onDelete,
   onEdit,
+  onView,
 }) => {
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition-shadow p-4 flex flex-col gap-3">
+    <div
+      onClick={() => onView(prompt)}
+      className="cursor-pointer rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition-shadow p-4 flex flex-col gap-3"
+    >
       <div className="flex items-start justify-between gap-2">
         <div>
           <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -19,17 +23,23 @@ const PromptCard = ({
         <div className="flex items-center gap-1 shrink-0">
           <button
             type="button"
-            onClick={() => onTogglePin(prompt.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onTogglePin(prompt.id);
+            }}
             aria-label={prompt.isPinned ? "Unpin prompt" : "Pin prompt"}
-            className={prompt.isPinned ? "bg-gray-600 text-blue-600" : "text-gray-300 hover:text-gray-500"}
+            className={prompt.isPinned ? "text-blue-600" : "text-gray-300 hover:text-gray-500"}
           >
             📌
           </button>
           <button
             type="button"
-            onClick={() => onToggleFavorite(prompt.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(prompt.id);
+            }}
             aria-label={prompt.isFavorite ? "Remove from favorites" : "Add to favorites"}
-            className={prompt.isFavorite ? "bg-gray-600 text-yellow-500" : "text-gray-300 hover:text-gray-500"}
+            className={prompt.isFavorite ? "text-yellow-500" : "text-gray-300 hover:text-gray-500"}
           >
             ⭐
           </button>
@@ -62,21 +72,30 @@ const PromptCard = ({
       <div className="flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs font-medium">
         <button
           type="button"
-          onClick={() => onEdit(prompt)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit(prompt);
+          }}
           className="text-gray-500 hover:text-blue-600"
         >
           Edit
         </button>
         <button
           type="button"
-          onClick={() => onToggleArchive(prompt.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleArchive(prompt.id);
+          }}
           className="text-gray-500 hover:text-orange-600"
         >
           {prompt.isArchived ? "Restore" : "Archive"}
         </button>
         <button
           type="button"
-          onClick={() => onDelete(prompt.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(prompt.id);
+          }}
           className="text-gray-500 hover:text-red-600"
         >
           Delete
