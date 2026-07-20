@@ -1,3 +1,5 @@
+import { Pin, Star } from "lucide-react";
+
 const PromptCard = ({
   prompt,
   onToggleFavorite,
@@ -30,7 +32,7 @@ const PromptCard = ({
             aria-label={prompt.isPinned ? "Unpin prompt" : "Pin prompt"}
             className={prompt.isPinned ? "text-blue-600" : "text-gray-300 hover:text-gray-500"}
           >
-            📌
+            <Pin size={16} fill={prompt.isPinned ? "currentColor" : "none"} />
           </button>
           <button
             type="button"
@@ -41,7 +43,7 @@ const PromptCard = ({
             aria-label={prompt.isFavorite ? "Remove from favorites" : "Add to favorites"}
             className={prompt.isFavorite ? "text-yellow-500" : "text-gray-300 hover:text-gray-500"}
           >
-            ⭐
+            <Star size={16} fill={prompt.isFavorite ? "currentColor" : "none"} />
           </button>
         </div>
       </div>
