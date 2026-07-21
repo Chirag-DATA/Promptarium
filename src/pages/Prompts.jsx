@@ -52,7 +52,7 @@ const Prompts = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Prompts</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -60,7 +60,7 @@ const Prompts = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <ImportButton onImport={importPrompts} />
           <ExportMenu prompts={prompts} />
           <button
