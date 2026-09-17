@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useCallback } from "react";
-import { apiClient, ApiError } from "../services/apiClient";
+import { apiClient, ApiError, registerRefreshHandler } from "../services/apiClient";
 
 export const AuthContext = createContext(null);
 
@@ -10,41 +10,75 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      if (!token) {
-        setIsLoading(false);
-        return;
-      }
+  const refreshAccessToken = useCallback(async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh`, {
+        method: "POST",
+        credentials: "include",
+      });
 
-      try {
-        const currentUser = await apiClient.get("/auth/me");
-        setUser(currentUser);
-      } catch {
+      if (!response.ok) {
         localStorage.removeItem(TOKEN_KEY);
         setToken(null);
         setUser(null);
-      } finally {
-        setIsLoading(false);
+        return false;
       }
+
+      const data = await response.json();
+      localStorage.setItem(TOKEN_KEY, data.access_token);
+      setToken(data.access_token);
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  useEffect(() => {
+    registerRefreshHandler(refreshAccessToken);
+  }, [refreshAccessToken]);
+
+  useEffect(() => {
+    const verifyToken = async () => {
+      if (token) {
+        try {
+          const currentUser = await apiClient.get("/auth/me");
+          setUser(currentUser);
+          setIsLoading(false);
+          return;
+        } catch {
+          // fall through to try a silent refresh below
+        }
+      }
+
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        try {
+          const currentUser = await apiClient.get("/auth/me");
+          setUser(currentUser);
+        } catch {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
     };
 
     verifyToken();
-  }, [token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const login = useCallback(async (email, password) => {
     const formBody = new URLSearchParams();
     formBody.append("username", email);
     formBody.append("password", password);
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/auth/login`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formBody,
-      }
-    );
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formBody,
+      credentials: "include",
+    });
 
     const data = await response.json();
 
@@ -61,7 +95,16 @@ export const AuthProvider = ({ children }) => {
     await login(email, password);
   }, [login]);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch {
+      // even if this fails, still clear local state below
+    }
+
     localStorage.removeItem(TOKEN_KEY);
     setToken(null);
     setUser(null);

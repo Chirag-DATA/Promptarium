@@ -10,7 +10,13 @@ class ApiError extends Error {
   }
 }
 
-const request = async (endpoint, options = {}) => {
+let refreshHandler = null;
+
+export const registerRefreshHandler = (handler) => {
+  refreshHandler = handler;
+};
+
+const request = async (endpoint, options = {}, isRetry = false) => {
   const token = getToken();
 
   const headers = {
@@ -25,7 +31,15 @@ const request = async (endpoint, options = {}) => {
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers,
+    credentials: "include",
   });
+
+  if (response.status === 401 && !isRetry && refreshHandler && endpoint !== "/auth/refresh") {
+    const refreshed = await refreshHandler();
+    if (refreshed) {
+      return request(endpoint, options, true);
+    }
+  }
 
   if (response.status === 204) {
     return null;
@@ -53,6 +67,7 @@ const requestFile = async (endpoint, formData) => {
     method: "POST",
     headers,
     body: formData,
+    credentials: "include",
   });
 
   const data = await response.json().catch(() => null);
