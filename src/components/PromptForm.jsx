@@ -10,6 +10,7 @@ const getInitialFormState = (initialValues) => ({
   tags: initialValues?.tags || [],
   description: initialValues?.description || "",
   aiModel: initialValues?.aiModel || AI_MODELS[0],
+  isPublic: initialValues?.isPublic || false,
 });
 
 const PromptForm = ({ initialValues, onSubmit, onCancel, submitLabel = "Save Prompt" }) => {
@@ -76,32 +77,15 @@ const PromptForm = ({ initialValues, onSubmit, onCancel, submitLabel = "Save Pro
           placeholder="Write the actual prompt content here..."
           className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500 resize-none"
         />
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Prompt
-          </label>
-          <textarea 
-            value={formData.prompt}
-            onChange={(e) => handleChange("prompt", e.target.value)}
-            rows={5}
-            placeholder="Write the actual prompt content here..."
-            className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-          />
-          {errors.prompt && (
-            <p className="mt-1 text-xs text-red-500">{errors.prompt}</p>
-          )}
-        </div>
-
-        <EnhancePromptPanel
-          promptText={formData.prompt}
-          onApply={(enhancedText) => handleChange("prompt", enhancedText)}
-        />
-
-
         {errors.prompt && (
           <p className="mt-1 text-xs text-red-500">{errors.prompt}</p>
         )}
       </div>
+
+      <EnhancePromptPanel
+        promptText={formData.prompt}
+        onApply={(enhancedText) => handleChange("prompt", enhancedText)}
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -147,6 +131,32 @@ const PromptForm = ({ initialValues, onSubmit, onCancel, submitLabel = "Save Pro
           tags={formData.tags}
           onChange={(newTags) => handleChange("tags", newTags)}
         />
+      </div>
+
+      <div className="flex items-center justify-between rounded-md border border-gray-200 dark:border-gray-700 px-4 py-3">
+        <div>
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Make this prompt public
+          </p>
+          <p className="text-xs text-gray-400">
+            Public prompts appear on the Explore feed for anyone to view and copy.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => handleChange("isPublic", !formData.isPublic)}
+          className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
+            formData.isPublic ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-700"
+          }`}
+          aria-pressed={formData.isPublic}
+          aria-label="Toggle public visibility"
+        >
+          <span
+            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              formData.isPublic ? "translate-x-6" : "translate-x-1"
+            }`}
+          />
+        </button>
       </div>
 
       <div>

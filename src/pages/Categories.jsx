@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
 import { usePrompts } from "../hooks/usePrompts";
 import { usePromptEditor } from "../hooks/usePromptEditor";
+import { usePromptViewer } from "../hooks/usePromptViewer";
 import { PROMPT_CATEGORIES } from "../constants/promptCategories";
 import Modal from "../components/Modal";
 import PromptForm from "../components/PromptForm";
 import PromptCard from "../components/PromptCard";
-import { usePromptViewer } from "../hooks/usePromptViewer";
 import PromptViewModal from "../components/PromptViewModal";
 
 const Categories = () => {
@@ -16,6 +16,7 @@ const Categories = () => {
     toggleFavorite,
     togglePin,
     toggleArchive,
+    togglePublic,
   } = usePrompts();
 
   const {
@@ -100,6 +101,7 @@ const Categories = () => {
               onToggleFavorite={toggleFavorite}
               onTogglePin={togglePin}
               onToggleArchive={toggleArchive}
+              onTogglePublic={togglePublic}
               onDelete={handleDelete}
               onEdit={openEditModal}
               onView={openViewer}
@@ -121,6 +123,7 @@ const Categories = () => {
           submitLabel="Save Changes"
         />
       </Modal>
+
       <PromptViewModal
         prompt={viewingPrompt}
         onClose={closeViewer}

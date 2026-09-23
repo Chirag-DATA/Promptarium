@@ -1,10 +1,11 @@
-import { Pin, Star } from "lucide-react";
+import { Pin, Star, Globe, Lock } from "lucide-react";
 
 const PromptCard = ({
   prompt,
   onToggleFavorite,
   onTogglePin,
   onToggleArchive,
+  onTogglePublic,
   onDelete,
   onEdit,
   onView,
@@ -71,37 +72,54 @@ const PromptCard = ({
         </span>
       )}
 
-      <div className="flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs font-medium">
+      <div className="flex items-center justify-between gap-3 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs font-medium">
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            onEdit(prompt);
+            onTogglePublic(prompt.id);
           }}
-          className="text-gray-500 hover:text-blue-600"
+          className={`flex items-center gap-1 ${
+            prompt.isPublic ? "text-blue-600" : "text-gray-500 hover:text-blue-600"
+          }`}
+          title={prompt.isPublic ? "Public — click to make private" : "Private — click to make public"}
         >
-          Edit
+          {prompt.isPublic ? <Globe size={13} /> : <Lock size={13} />}
+          {prompt.isPublic ? "Public" : "Private"}
         </button>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleArchive(prompt.id);
-          }}
-          className="text-gray-500 hover:text-orange-600"
-        >
-          {prompt.isArchived ? "Restore" : "Archive"}
-        </button>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(prompt.id);
-          }}
-          className="text-gray-500 hover:text-red-600"
-        >
-          Delete
-        </button>
+
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(prompt);
+            }}
+            className="text-gray-500 hover:text-blue-600"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleArchive(prompt.id);
+            }}
+            className="text-gray-500 hover:text-orange-600"
+          >
+            {prompt.isArchived ? "Restore" : "Archive"}
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(prompt.id);
+            }}
+            className="text-gray-500 hover:text-red-600"
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );

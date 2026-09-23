@@ -1,15 +1,15 @@
 import { usePrompts } from "../hooks/usePrompts";
 import { usePromptFilters } from "../hooks/usePromptFilters";
 import { usePromptEditor } from "../hooks/usePromptEditor";
+import { usePromptViewer } from "../hooks/usePromptViewer";
 import Modal from "../components/Modal";
 import PromptForm from "../components/PromptForm";
 import PromptCard from "../components/PromptCard";
+import PromptViewModal from "../components/PromptViewModal";
 import SearchBar from "../components/SearchBar";
 import FilterPanel from "../components/FilterPanel";
 import ExportMenu from "../components/ExportMenu";
 import ImportButton from "../components/ImportButton";
-import { usePromptViewer } from "../hooks/usePromptViewer";
-import PromptViewModal from "../components/PromptViewModal";
 
 const Prompts = () => {
   const {
@@ -20,6 +20,7 @@ const Prompts = () => {
     toggleFavorite,
     togglePin,
     toggleArchive,
+    togglePublic,
     importPrompts,
   } = usePrompts();
 
@@ -37,8 +38,6 @@ const Prompts = () => {
     SORT_OPTIONS,
   } = usePromptFilters(prompts);
 
-  const { viewingPrompt, openViewer, closeViewer } = usePromptViewer();
-
   const {
     isModalOpen,
     editingPrompt,
@@ -49,6 +48,8 @@ const Prompts = () => {
     handleSubmit,
     handleDelete,
   } = usePromptEditor({ addPrompt, updatePrompt, deletePrompt });
+
+  const { viewingPrompt, openViewer, closeViewer } = usePromptViewer();
 
   return (
     <div>
@@ -104,6 +105,7 @@ const Prompts = () => {
               onToggleFavorite={toggleFavorite}
               onTogglePin={togglePin}
               onToggleArchive={toggleArchive}
+              onTogglePublic={togglePublic}
               onDelete={handleDelete}
               onEdit={openEditModal}
               onView={openViewer}
@@ -122,21 +124,22 @@ const Prompts = () => {
             {error}
           </p>
         )}
-        <PromptForm 
+        <PromptForm
           initialValues={editingPrompt}
           onSubmit={handleSubmit}
           onCancel={closeModal}
           submitLabel={editingPrompt ? "Save Changes" : "Create Prompt"}
         />
-     </Modal>
-     <PromptViewModal
-      prompt={viewingPrompt}
-      onClose={closeViewer}
-      onEdit={(prompt) => {
-        closeViewer();
-        openEditModal(prompt);
-      }}
-    />
+      </Modal>
+
+      <PromptViewModal
+        prompt={viewingPrompt}
+        onClose={closeViewer}
+        onEdit={(prompt) => {
+          closeViewer();
+          openEditModal(prompt);
+        }}
+      />
     </div>
   );
 };

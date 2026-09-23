@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { usePrompts } from "../hooks/usePrompts";
 import { usePromptEditor } from "../hooks/usePromptEditor";
+import { usePromptViewer } from "../hooks/usePromptViewer";
 import Modal from "../components/Modal";
 import PromptForm from "../components/PromptForm";
 import PromptCard from "../components/PromptCard";
-import { usePromptViewer } from "../hooks/usePromptViewer";
 import PromptViewModal from "../components/PromptViewModal";
 
 const Favorites = () => {
@@ -15,6 +15,7 @@ const Favorites = () => {
     toggleFavorite,
     togglePin,
     toggleArchive,
+    togglePublic,
   } = usePrompts();
 
   const {
@@ -57,6 +58,7 @@ const Favorites = () => {
               onToggleFavorite={toggleFavorite}
               onTogglePin={togglePin}
               onToggleArchive={toggleArchive}
+              onTogglePublic={togglePublic}
               onDelete={handleDelete}
               onEdit={openEditModal}
               onView={openViewer}
@@ -78,14 +80,15 @@ const Favorites = () => {
           submitLabel="Save Changes"
         />
       </Modal>
+
       <PromptViewModal
-      prompt={viewingPrompt}
-      onClose={closeViewer}
-      onEdit={(prompt) => {
-        closeViewer();
-        openEditModal(prompt);
-      }}
-    />
+        prompt={viewingPrompt}
+        onClose={closeViewer}
+        onEdit={(prompt) => {
+          closeViewer();
+          openEditModal(prompt);
+        }}
+      />
     </div>
   );
 };

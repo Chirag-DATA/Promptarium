@@ -1,31 +1,35 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth";
 
-const GUEST_KEY = "promptarium_gemini_api_key_guest";
-const getUserStorageKey = (userId) => `promptarium_gemini_api_key_${userId}`;
+const getStorageKey = (userId) => `promptarium_gemini_api_key_${userId}`;
 
 export const useApiKey = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const [apiKey, setApiKeyState] = useState("");
 
-  const storageKey = isAuthenticated ? getUserStorageKey(user.id) : GUEST_KEY;
-
   useEffect(() => {
-    const stored = localStorage.getItem(storageKey) || "";
+    if (!user) {
+      setApiKeyState("");
+      return;
+    }
+
+    const stored = localStorage.getItem(getStorageKey(user.id)) || "";
     setApiKeyState(stored);
-  }, [storageKey]);
+  }, [user]);
 
   const setApiKey = useCallback(
     (newKey) => {
+      if (!user) return;
+
       setApiKeyState(newKey);
 
       if (newKey) {
-        localStorage.setItem(storageKey, newKey);
+        localStorage.setItem(getStorageKey(user.id), newKey);
       } else {
-        localStorage.removeItem(storageKey);
+        localStorage.removeItem(getStorageKey(user.id));
       }
     },
-    [storageKey]
+    [user]
   );
 
   return { apiKey, setApiKey };
