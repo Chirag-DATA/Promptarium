@@ -1,23 +1,25 @@
 const RecentPromptsList = ({ prompts }) => {
   if (prompts.length === 0) {
     return (
-      <p className="text-sm text-gray-500 dark:text-gray-400">
-        No prompts yet.
+      <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 py-6 text-center">
+        No prompts created yet.
       </p>
     );
   }
 
   return (
-    <ul className="flex flex-col divide-y divide-gray-100 dark:divide-gray-800">
+    <ul className="flex flex-col divide-y divide-slate-100 dark:divide-slate-800/60">
       {prompts.map((prompt) => (
         <li key={prompt.id} className="py-3 flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+            <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
               {prompt.title}
             </p>
-            <p className="text-xs text-gray-400">{prompt.category}</p>
+            <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500">
+              {prompt.category}
+            </p>
           </div>
-          {prompt.isFavorite && <span className="text-yellow-500 shrink-0">⭐</span>}
+          {prompt.isFavorite && <span className="text-amber-500 text-xs shrink-0">★</span>}
         </li>
       ))}
     </ul>

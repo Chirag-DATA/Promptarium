@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
 import { usePrompts } from "../hooks/usePrompts";
 import { usePromptEditor } from "../hooks/usePromptEditor";
+import { usePromptViewer } from "../hooks/usePromptViewer";
 import { PROMPT_CATEGORIES } from "../constants/promptCategories";
 import Modal from "../components/Modal";
 import PromptForm from "../components/PromptForm";
 import PromptCard from "../components/PromptCard";
-import { usePromptViewer } from "../hooks/usePromptViewer";
 import PromptViewModal from "../components/PromptViewModal";
 
 const Categories = () => {
@@ -16,6 +16,7 @@ const Categories = () => {
     toggleFavorite,
     togglePin,
     toggleArchive,
+    togglePublic,
   } = usePrompts();
 
   const {
@@ -49,11 +50,11 @@ const Categories = () => {
   }, [activePrompts, activeCategory]);
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Categories</h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Browse prompts organized by category.
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50">Categories</h1>
+        <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">
+          Filter and browse prompts by topic.
         </p>
       </div>
 
@@ -61,10 +62,10 @@ const Categories = () => {
         <button
           type="button"
           onClick={() => setActiveCategory(null)}
-          className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+          className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
             activeCategory === null
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              ? "bg-blue-600 text-white shadow-xs"
+              : "bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
           }`}
         >
           All ({activePrompts.length})
@@ -74,10 +75,10 @@ const Categories = () => {
             key={category.name}
             type="button"
             onClick={() => setActiveCategory(category.name)}
-            className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
               activeCategory === category.name
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                ? "bg-blue-600 text-white shadow-xs"
+                : "bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
             {category.name} ({category.count})
@@ -86,13 +87,13 @@ const Categories = () => {
       </div>
 
       {visiblePrompts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-gray-500 dark:text-gray-400">
-            No prompts in this category yet.
+        <div className="text-center py-20 border border-dashed border-slate-200 dark:border-slate-800 rounded-3xl">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-semibold">
+            No prompts found under this category.
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {visiblePrompts.map((prompt) => (
             <PromptCard
               key={prompt.id}
@@ -100,6 +101,7 @@ const Categories = () => {
               onToggleFavorite={toggleFavorite}
               onTogglePin={togglePin}
               onToggleArchive={toggleArchive}
+              onTogglePublic={togglePublic}
               onDelete={handleDelete}
               onEdit={openEditModal}
               onView={openViewer}
@@ -110,7 +112,7 @@ const Categories = () => {
 
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Edit Prompt">
         {error && (
-          <p className="mb-3 text-sm text-red-500 bg-red-50 dark:bg-red-950 rounded-md px-3 py-2">
+          <p className="mb-3 text-xs font-semibold text-rose-600 bg-rose-50 dark:bg-rose-950/40 rounded-2xl px-3.5 py-2 border border-rose-200 dark:border-rose-900/50">
             {error}
           </p>
         )}
@@ -121,6 +123,7 @@ const Categories = () => {
           submitLabel="Save Changes"
         />
       </Modal>
+
       <PromptViewModal
         prompt={viewingPrompt}
         onClose={closeViewer}

@@ -3,8 +3,8 @@ const CategoryBreakdown = ({ categoryCounts }) => {
 
   if (entries.length === 0) {
     return (
-      <p className="text-sm text-gray-500 dark:text-gray-400">
-        No categories yet.
+      <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 py-6 text-center">
+        No active prompts to categorize.
       </p>
     );
   }
@@ -12,16 +12,16 @@ const CategoryBreakdown = ({ categoryCounts }) => {
   const maxCount = entries[0][1];
 
   return (
-    <ul className="flex flex-col gap-3">
+    <ul className="flex flex-col gap-3.5">
       {entries.map(([category, count]) => (
         <li key={category}>
-          <div className="flex items-center justify-between text-sm mb-1">
-            <span className="text-gray-700 dark:text-gray-300">{category}</span>
-            <span className="text-gray-400">{count}</span>
+          <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
+            <span className="text-slate-800 dark:text-slate-200">{category}</span>
+            <span className="text-slate-400 dark:text-slate-500 font-mono">{count}</span>
           </div>
-          <div className="h-1.5 w-full rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+          <div className="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
             <div
-              className="h-full rounded-full bg-blue-600"
+              className="h-full rounded-full bg-blue-600 dark:bg-blue-500 transition-all duration-300"
               style={{ width: `${(count / maxCount) * 100}%` }}
             />
           </div>

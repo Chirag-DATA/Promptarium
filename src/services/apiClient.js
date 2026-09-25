@@ -1,23 +1,23 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
+const TOKEN_KEY = "promptarium_auth_token";
 
-const getToken = () => localStorage.getItem("promptarium_auth_token");
+let onTokenRefreshHandler = null;
 
-class ApiError extends Error {
-  constructor(message, status, data) {
+export class ApiError extends Error {
+  constructor(message, status, data = null) {
     super(message);
+    this.name = "ApiError";
     this.status = status;
     this.data = data;
   }
 }
 
-let refreshHandler = null;
-
 export const registerRefreshHandler = (handler) => {
-  refreshHandler = handler;
+  onTokenRefreshHandler = handler;
 };
 
 const request = async (endpoint, options = {}, isRetry = false) => {
-  const token = getToken();
+  const token = localStorage.getItem(TOKEN_KEY);
 
   const headers = {
     "Content-Type": "application/json",
@@ -31,11 +31,11 @@ const request = async (endpoint, options = {}, isRetry = false) => {
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers,
-    credentials: "include",
+    credentials: "include", // Required for cross-origin refresh cookie transmission
   });
 
-  if (response.status === 401 && !isRetry && refreshHandler && endpoint !== "/auth/refresh") {
-    const refreshed = await refreshHandler();
+  if (response.status === 401 && !isRetry && onTokenRefreshHandler) {
+    const refreshed = await onTokenRefreshHandler();
     if (refreshed) {
       return request(endpoint, options, true);
     }
@@ -55,39 +55,35 @@ const request = async (endpoint, options = {}, isRetry = false) => {
   return data;
 };
 
-const requestFile = async (endpoint, formData) => {
-  const token = getToken();
-
-  const headers = {};
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${BASE_URL}${endpoint}`, {
-    method: "POST",
-    headers,
-    body: formData,
-    credentials: "include",
-  });
-
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    const message = data?.detail || `Request failed with status ${response.status}`;
-    throw new ApiError(message, response.status, data);
-  }
-
-  return data;
-};
-
 export const apiClient = {
-  get: (endpoint) => request(endpoint, { method: "GET" }),
-  post: (endpoint, body) =>
-    request(endpoint, { method: "POST", body: JSON.stringify(body) }),
-  patch: (endpoint, body) =>
-    request(endpoint, { method: "PATCH", body: JSON.stringify(body) }),
-  delete: (endpoint) => request(endpoint, { method: "DELETE" }),
-  postFile: (endpoint, formData) => requestFile(endpoint, formData),
-};
+  get: (endpoint, options) => request(endpoint, { ...options, method: "GET" }),
+  post: (endpoint, body, options) =>
+    request(endpoint, { ...options, method: "POST", body: JSON.stringify(body) }),
+  patch: (endpoint, body, options) =>
+    request(endpoint, { ...options, method: "PATCH", body: JSON.stringify(body) }),
+  delete: (endpoint, options) => request(endpoint, { ...options, method: "DELETE" }),
 
-export { ApiError };
+  postFile: async (endpoint, formData) => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    const headers = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      method: "POST",
+      headers,
+      body: formData,
+      credentials: "include",
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      const message = data?.detail || `Upload failed with status ${response.status}`;
+      throw new ApiError(message, response.status, data);
+    }
+
+    return data;
+  },
+};

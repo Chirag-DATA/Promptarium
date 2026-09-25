@@ -39,9 +39,9 @@ const EnhancePromptPanel = ({ promptText, onApply }) => {
 
   if (!apiKey) {
     return (
-      <div className="rounded-md border border-dashed border-gray-300 dark:border-gray-700 p-3 text-sm text-gray-500 dark:text-gray-400">
+      <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 p-3.5 text-xs text-slate-500 dark:text-slate-400">
         Add a Gemini API key in{" "}
-        <Link to="/dashboard/settings" className="text-blue-600 hover:underline">
+        <Link to="/dashboard/settings" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">
           Settings
         </Link>{" "}
         to enable AI enhancement.
@@ -50,7 +50,7 @@ const EnhancePromptPanel = ({ promptText, onApply }) => {
   }
 
   return (
-    <div className="rounded-md border border-gray-200 dark:border-gray-800 p-3 flex flex-col gap-3">
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-800 p-3.5 flex flex-col gap-3 bg-white dark:bg-[#111827]">
       <div className="flex flex-wrap gap-2">
         {ACTIONS.map((action) => (
           <button
@@ -58,38 +58,38 @@ const EnhancePromptPanel = ({ promptText, onApply }) => {
             type="button"
             disabled={isLoading || !promptText.trim()}
             onClick={() => handleAction(action.key)}
-            className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-800 px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            <Sparkles size={14} /> {action.label}
+            <Sparkles size={13} className="text-blue-600 dark:text-blue-400" /> {action.label}
           </button>
         ))}
       </div>
 
       {isLoading && (
-        <p className="text-xs text-gray-500 dark:text-gray-400">Thinking...</p>
+        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Thinking...</p>
       )}
 
       {error && (
-        <p className="text-xs text-red-500">{error}</p>
+        <p className="text-xs font-semibold text-rose-600">{error}</p>
       )}
 
       {result && (
-        <div className="rounded-md bg-gray-50 dark:bg-gray-800 p-3 flex flex-col gap-2">
-          <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+        <div className="rounded-2xl bg-slate-50 dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 p-3 flex flex-col gap-2">
+          <p className="text-xs text-slate-800 dark:text-slate-200 font-mono whitespace-pre-wrap leading-relaxed">
             {result}
           </p>
-          <div className="flex gap-3">
+          <div className="flex gap-3 pt-1">
             <button
               type="button"
               onClick={handleApply}
-              className="text-xs font-medium text-blue-600 hover:underline"
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
             >
               Use this
             </button>
             <button
               type="button"
               onClick={() => setResult("")}
-              className="text-xs font-medium text-gray-500 hover:underline"
+              className="text-xs font-semibold text-slate-500 hover:underline"
             >
               Discard
             </button>

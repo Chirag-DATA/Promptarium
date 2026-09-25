@@ -11,6 +11,7 @@ const mapFromApi = (apiPrompt) => ({
   isFavorite: apiPrompt.is_favorite,
   isPinned: apiPrompt.is_pinned,
   isArchived: apiPrompt.is_archived,
+  isPublic: apiPrompt.is_public,
   createdAt: apiPrompt.created_at,
   updatedAt: apiPrompt.updated_at,
 });
@@ -34,6 +35,7 @@ const UPDATE_FIELD_MAP = {
   isFavorite: "is_favorite",
   isPinned: "is_pinned",
   isArchived: "is_archived",
+  isPublic: "is_public",
 };
 
 const mapToApiUpdate = (updates) => {
@@ -64,4 +66,12 @@ export const updatePromptApi = async (id, updates) => {
 
 export const deletePromptApi = async (id) => {
   await apiClient.delete(`/prompts/${id}`);
+};
+
+export const fetchPublicPrompts = async (skip = 0, limit = 20) => {
+  return apiClient.get(`/prompts/public?skip=${skip}&limit=${limit}`);
+};
+
+export const toggleLike = async (id) => {
+  return apiClient.post(`/prompts/${id}/like`);
 };

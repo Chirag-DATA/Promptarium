@@ -1,12 +1,12 @@
 const StatCard = ({ label, value, icon }) => {
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm p-4 flex items-center gap-4">
-      <div className="flex h-10 w-10 items-center justify-center rounded-md bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300">
+    <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#111827] shadow-xs p-5 flex items-center gap-4">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50">
         {icon}
       </div>
       <div>
-        <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
-        <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
+        <p className="text-2xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight">{value}</p>
+        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">{label}</p>
       </div>
     </div>
   );

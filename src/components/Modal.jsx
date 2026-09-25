@@ -22,7 +22,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4"
       onClick={onClose}
     >
       <div
@@ -30,19 +30,19 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         aria-modal="true"
         aria-labelledby="modal-title"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-lg bg-white dark:bg-gray-900 p-6 shadow-xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-lg rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
       >
-        <div className="flex items-center justify-between mb-4">
-          <h2 id="modal-title" className="text-lg font-semibold text-gray-900 dark:text-white">
+        <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800/80">
+          <h2 id="modal-title" className="text-base font-extrabold text-slate-900 dark:text-slate-100">
             {title}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 

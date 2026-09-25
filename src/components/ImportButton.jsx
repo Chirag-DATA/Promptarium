@@ -40,7 +40,7 @@ const ImportButton = ({ onImport }) => {
       <button
         type="button"
         onClick={() => fileInputRef.current.click()}
-        className="rounded-md border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
+        className="rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
       >
         Import
       </button>

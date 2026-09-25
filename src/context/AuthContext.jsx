@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from "react";
+import { createContext, useState, useEffect, useCallback, useRef } from "react";
 import { apiClient, ApiError, registerRefreshHandler } from "../services/apiClient";
 
 export const AuthContext = createContext(null);
@@ -9,8 +9,11 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const isLoggingOut = useRef(false);
 
   const refreshAccessToken = useCallback(async () => {
+    if (isLoggingOut.current) return false;
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh`, {
         method: "POST",
@@ -39,14 +42,20 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const verifyToken = async () => {
-      if (token) {
+      if (isLoggingOut.current) {
+        setIsLoading(false);
+        return;
+      }
+
+      const storedToken = localStorage.getItem(TOKEN_KEY);
+      if (storedToken) {
         try {
           const currentUser = await apiClient.get("/auth/me");
           setUser(currentUser);
           setIsLoading(false);
           return;
         } catch {
-          // fall through to try a silent refresh below
+          // Token expired, fall through to refresh
         }
       }
 
@@ -61,14 +70,16 @@ export const AuthProvider = ({ children }) => {
       } else {
         setUser(null);
       }
+
       setIsLoading(false);
     };
 
     verifyToken();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [refreshAccessToken]);
 
   const login = useCallback(async (email, password) => {
+    isLoggingOut.current = false;
+
     const formBody = new URLSearchParams();
     formBody.append("username", email);
     formBody.append("password", password);
@@ -88,26 +99,53 @@ export const AuthProvider = ({ children }) => {
 
     localStorage.setItem(TOKEN_KEY, data.access_token);
     setToken(data.access_token);
+
+    try {
+      const currentUser = await apiClient.get("/auth/me");
+      setUser(currentUser);
+    } catch (err) {
+      console.error("Failed to load user profile during login:", err);
+    }
   }, []);
 
   const signup = useCallback(async (email, password) => {
+    isLoggingOut.current = false;
     await apiClient.post("/auth/signup", { email, password });
-    await login(email, password);
-  }, [login]);
+  }, []);
 
   const logout = useCallback(async () => {
+    isLoggingOut.current = true;
+
+    localStorage.removeItem(TOKEN_KEY);
+    setToken(null);
+    setUser(null);
+
     try {
       await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
-    } catch {
-      // even if this fails, still clear local state below
+    } catch (err) {
+      console.error("Logout request failed:", err);
     }
+  }, []);
 
-    localStorage.removeItem(TOKEN_KEY);
-    setToken(null);
-    setUser(null);
+  const requestDeleteOtp = useCallback(async () => {
+    return await apiClient.post("/auth/delete-account/request-otp", {});
+  }, []);
+
+  const confirmDeleteAccount = useCallback(async (otp) => {
+    isLoggingOut.current = true;
+    try {
+      await apiClient.post("/auth/delete-account/confirm", { otp });
+      // Only clear storage and user state when the deletion successfully commits
+      localStorage.removeItem(TOKEN_KEY);
+      setToken(null);
+      setUser(null);
+    } catch (err) {
+      isLoggingOut.current = false;
+      throw err;
+    }
   }, []);
 
   const updateProfile = useCallback(async (updates) => {
@@ -135,6 +173,8 @@ export const AuthProvider = ({ children }) => {
         login,
         signup,
         logout,
+        requestDeleteOtp,
+        confirmDeleteAccount,
         updateProfile,
         uploadPhoto,
       }}

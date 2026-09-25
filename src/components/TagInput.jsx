@@ -27,11 +27,11 @@ const TagInput = ({ tags, onChange }) => {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 focus-within:ring-2 focus-within:ring-blue-500">
+    <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0B0F19] px-3.5 py-2 focus-within:ring-2 focus-within:ring-blue-500/30">
       {tags.map((tag) => (
         <span
           key={tag}
-          className="flex items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-950 px-2.5 py-1 text-xs font-medium text-blue-600 dark:text-blue-400"
+          className="flex items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-950/50 px-2.5 py-0.5 text-[11px] font-semibold text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/50"
         >
           {tag}
           <button
@@ -51,7 +51,7 @@ const TagInput = ({ tags, onChange }) => {
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={tags.length === 0 ? "Add tags (Enter or comma)" : ""}
-        className="flex-1 min-w-[120px] bg-transparent text-sm text-gray-900 dark:text-white outline-none placeholder:text-gray-400"
+        className="flex-1 min-w-[120px] bg-transparent text-xs font-medium text-slate-900 dark:text-slate-100 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
       />
     </div>
   );
