@@ -11,8 +11,8 @@ const SIDEBAR_LINKS = [
 
 const Sidebar = () => {
   return (
-    <aside className="hidden md:flex md:flex-col w-64 shrink-0 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-[1px_0_3px_rgba(0,0,0,0.03)] h-[calc(100vh-4rem)] sticky top-16">
-      <nav className="flex flex-col gap-1 p-4">
+    <aside className="hidden md:flex md:flex-col w-60 shrink-0 border-r border-slate-200/80 dark:border-slate-800/80 bg-[#F8FAFC]/60 dark:bg-[#0B0F19]/60 backdrop-blur-xs h-[calc(100vh-4rem)] sticky top-16 transition-colors">
+      <nav className="flex flex-col gap-1.5 p-4">
         {SIDEBAR_LINKS.map((link) => {
           const Icon = link.icon;
           return (
@@ -21,14 +21,14 @@ const Sidebar = () => {
               to={link.to}
               end={link.to === "/dashboard"}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                `flex items-center gap-3 rounded-2xl px-4 py-2.5 text-xs font-semibold transition-all ${
                   isActive
-                    ? "bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400"
-                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
+                    ? "bg-white dark:bg-slate-800/90 text-blue-600 dark:text-blue-400 shadow-xs border border-slate-200 dark:border-slate-700/80"
+                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200"
                 }`
               }
             >
-              <Icon size={18} />
+              <Icon size={16} />
               {link.label}
             </NavLink>
           );

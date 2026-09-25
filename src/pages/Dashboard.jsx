@@ -5,7 +5,6 @@ import RecentPromptsList from "../components/RecentPromptsList";
 import CategoryBreakdown from "../components/CategoryBreakdown";
 import { FileText, Star, Pin, Archive } from "lucide-react";
 
-
 const Dashboard = () => {
   const { prompts } = usePrompts();
 
@@ -38,31 +37,33 @@ const Dashboard = () => {
   }, [prompts]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 max-w-7xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Every prompt, ready when you are.
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50">
+          Dashboard
+        </h1>
+        <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">
+          Overview of your prompt vault, statistics, and category distribution.
         </p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Prompts" value={stats.total} icon={<FileText size={20} />} />
-        <StatCard label="Favorites" value={stats.favorites} icon={<Star size={20} />} />
-        <StatCard label="Pinned" value={stats.pinned} icon={<Pin size={20} />} />
-        <StatCard label="Archived" value={stats.archived} icon={<Archive size={20} />} />
+        <StatCard label="Total Prompts" value={stats.total} icon={<FileText size={18} />} />
+        <StatCard label="Favorites" value={stats.favorites} icon={<Star size={18} />} />
+        <StatCard label="Pinned" value={stats.pinned} icon={<Pin size={18} />} />
+        <StatCard label="Archived" value={stats.archived} icon={<Archive size={18} />} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
-          <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+        <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#111827] p-6 shadow-xs">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
             Recent Prompts
           </h2>
           <RecentPromptsList prompts={recentPrompts} />
         </div>
 
-        <div className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
-          <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+        <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#111827] p-6 shadow-xs">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
             Prompts by Category
           </h2>
           <CategoryBreakdown categoryCounts={categoryCounts} />

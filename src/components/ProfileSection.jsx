@@ -49,18 +49,18 @@ const ProfileSection = () => {
   };
 
   return (
-    <div className="max-w-lg mb-10">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        Profile
+    <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#111827] p-6 shadow-xs">
+      <h2 className="text-sm font-extrabold text-slate-900 dark:text-slate-100 mb-4">
+        Profile Settings
       </h2>
 
       <div className="flex items-center gap-4 mb-6">
-        <div className="h-16 w-16 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden flex items-center justify-center shrink-0">
+        <div className="h-16 w-16 rounded-full ring-1 ring-slate-200 dark:ring-slate-700 bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center shrink-0">
           {photoUrl ? (
             <img src={photoUrl} alt="Profile" className="h-full w-full object-cover" />
           ) : (
-            <span className="text-xl font-semibold text-gray-400">
-              {user?.email?.[0]?.toUpperCase()}
+            <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
+              {(user?.email || "U")[0].toUpperCase()}
             </span>
           )}
         </div>
@@ -77,16 +77,16 @@ const ProfileSection = () => {
             type="button"
             onClick={() => fileInputRef.current.click()}
             disabled={isUploadingPhoto}
-            className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+            className="rounded-full border border-slate-200 dark:border-slate-800 px-4 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
           >
-            {isUploadingPhoto ? "Uploading..." : "Change Photo"}
+            {isUploadingPhoto ? "Uploading..." : "Change Avatar"}
           </button>
-          <p className="mt-1 text-xs text-gray-400">JPG, PNG, or WEBP. Max 5MB.</p>
+          <p className="mt-1 text-[11px] font-medium text-slate-400">JPG, PNG, or WEBP up to 5MB.</p>
         </div>
       </div>
 
       <form onSubmit={handleUsernameSave} className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
           Username
         </label>
         <div className="flex gap-2">
@@ -94,18 +94,18 @@ const ProfileSection = () => {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Choose a username"
-            className="flex-1 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Your public handle"
+            className="flex-1 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0B0F19] px-4 py-2 text-xs font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <button
             type="submit"
             disabled={isSavingUsername}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            className="rounded-full bg-blue-600 hover:bg-blue-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition-colors disabled:opacity-50"
           >
             {saved ? "Saved ✓" : "Save"}
           </button>
         </div>
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {error && <p className="text-xs font-semibold text-rose-600">{error}</p>}
       </form>
     </div>
   );
