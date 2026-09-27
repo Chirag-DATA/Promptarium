@@ -21,15 +21,35 @@ const MODEL_THEMES = {
   },
 };
 
+const getAvatarUrl = (url) => {
+  if (!url) return null;
+  let cleanUrl = url.trim();
+
+  // Repair missing colons if present
+  if (cleanUrl.startsWith("https//")) cleanUrl = cleanUrl.replace("https//", "https://");
+  if (cleanUrl.startsWith("http//")) cleanUrl = cleanUrl.replace("http//", "http://");
+
+  // If it's a Cloudinary or absolute URL, return it directly
+  if (cleanUrl.startsWith("http://") || cleanUrl.startsWith("https://") || cleanUrl.includes("cloudinary.com")) {
+    if (!cleanUrl.startsWith("http")) return `https://${cleanUrl.replace(/^\/+/, "")}`;
+    return cleanUrl;
+  }
+
+  // Prepend backend URL only for local disk uploads (e.g., /uploads/...)
+  const backendBase = import.meta.env.VITE_API_BASE_URL || "https://promptarium-backend.onrender.com";
+  return `${backendBase.replace(/\/$/, "")}/${cleanUrl.replace(/^\//, "")}`;
+};
+
 const PublicPromptCard = ({ prompt, onToggleLike, onSelectPrompt }) => {
   const { isAuthenticated } = useAuth();
   const [copied, setCopied] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
 
   const modelStyle = MODEL_THEMES[prompt.ai_model] || MODEL_THEMES.Other;
-  const authorPhotoUrl = prompt.author_photo
-    ? `${import.meta.env.VITE_API_BASE_URL}${prompt.author_photo}`
-    : null;
+
+  // Support whichever prop name the backend uses for the creator's avatar
+  const rawPhoto = prompt.author_photo || prompt.author_image_url || prompt.profile_image_url;
+  const authorPhotoUrl = getAvatarUrl(rawPhoto);
 
   const handleCopy = async (e) => {
     e.stopPropagation();
@@ -123,7 +143,14 @@ const PublicPromptCard = ({ prompt, onToggleLike, onSelectPrompt }) => {
         <div className="flex items-center gap-2 min-w-0">
           <div className="h-7 w-7 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
             {authorPhotoUrl ? (
-              <img src={authorPhotoUrl} alt="" className="h-full w-full object-cover" />
+              <img
+                src={authorPhotoUrl}
+                alt=""
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
             ) : (
               <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase">
                 {(prompt.author_username || "A")[0]}
