@@ -14,7 +14,7 @@ import {
 // Fixed: Point all links to the nested /dashboard/ routes
 const NAV_LINKS = [
   { to: "/dashboard", label: "Dashboard", end: true },
-  { to: "/explore", label: "Explore" },
+  { to: "/dashboard/explore", label: "Explore" },
   { to: "/dashboard/prompts", label: "My Prompts" },
   { to: "/dashboard/favorites", label: "Favorites" },
   { to: "/dashboard/categories", label: "Categories" },
