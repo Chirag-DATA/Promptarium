@@ -1,195 +1,251 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { Moon, Sun, Menu, X, Compass, LogOut } from "lucide-react";
-import { useTheme } from "../hooks/useTheme";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useTheme } from "../hooks/useTheme";
+import {
+  Sparkles,
+  Menu,
+  X,
+  Sun,
+  Moon,
+  LogOut,
+  FolderOpen,
+  Star,
+  Layers,
+  Settings as SettingsIcon,
+  Compass,
+} from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "Dashboard", to: "/dashboard" },
-  { label: "Prompts", to: "/dashboard/prompts" },
-  { label: "Favorites", to: "/dashboard/favorites" },
-  { label: "Categories", to: "/dashboard/categories" },
-  { label: "Settings", to: "/dashboard/settings" },
+  { to: "/dashboard", label: "Dashboard", end: true },
+  { to: "/explore", label: "Explore" },
+  { to: "/prompts", label: "My Prompts" },
+  { to: "/favorites", label: "Favorites" },
+  { to: "/categories", label: "Categories" },
 ];
 
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const { user, logout, isAuthenticated } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
-  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+  // Support both full Cloudinary HTTPS URLs and local server paths
+  const avatarUrl = user?.profile_image_url
+    ? user.profile_image_url.startsWith("http")
+      ? user.profile_image_url
+      : `${import.meta.env.VITE_API_BASE_URL}${user.profile_image_url}`
+    : null;
 
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
 
-  const photoUrl = user?.profile_image_url
-    ? `${import.meta.env.VITE_API_BASE_URL}${user.profile_image_url}`
-    : null;
-
   return (
-    <nav className="sticky top-0 z-30 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-md transition-colors">
-      <div className="mx-auto flex max-w-7xl items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-        {/* Brand */}
-        <NavLink to="/dashboard" className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-xl bg-blue-600 dark:bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-xs">
-            P
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Brand Logo */}
+        <Link to="/" className="flex items-center gap-2 group">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-xs group-hover:scale-105 transition-transform">
+            <Sparkles size={18} />
           </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-none">
-              Promptarium
-            </span>
-            <span className="hidden sm:block text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">
-              Every prompt, ready when you are
-            </span>
-          </div>
-        </NavLink>
+          <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Promptarium
+          </span>
+        </Link>
 
-        {/* Center Pill Links */}
-        <div className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-2xl border border-slate-200/70 dark:border-slate-800">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                isActive
-                  ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
-              }`
-            }
-          >
-            <Compass size={14} /> Explore
-          </NavLink>
+        {/* Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center gap-1">
           {NAV_LINKS.map((link) => (
             <NavLink
-              key={link.label}
+              key={link.to}
               to={link.to}
-              end={link.to === "/dashboard"}
+              end={link.end}
               className={({ isActive }) =>
-                `px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                `rounded-full px-3.5 py-1.5 text-xs font-bold transition-colors ${
                   isActive
-                    ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                    ? "bg-slate-100 text-blue-600 dark:bg-slate-800 dark:text-blue-400"
+                    : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
                 }`
               }
             >
               {link.label}
             </NavLink>
           ))}
-        </div>
+        </nav>
 
-        {/* Actions */}
+        {/* Right Action Icons & Profile */}
         <div className="hidden md:flex items-center gap-2.5">
+          {/* Theme Toggle */}
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors"
             aria-label="Toggle theme"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
           </button>
 
           {isAuthenticated ? (
-            <div className="flex items-center gap-3 pl-2 border-l border-slate-200 dark:border-slate-800">
-              <div className="h-8 w-8 rounded-full ring-1 ring-slate-200 dark:ring-slate-700 bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center shrink-0">
-                {photoUrl ? (
-                  <img src={photoUrl} alt="Profile" className="h-full w-full object-cover" />
-                ) : (
-                  <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase">
-                    {(user?.username || user?.email || "U")[0]}
-                  </span>
-                )}
-              </div>
-              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 max-w-[120px] truncate">
-                {user?.username || user?.email}
-              </span>
+            <div className="flex items-center gap-2 pl-1">
+              <Link
+                to="/settings"
+                className="flex items-center gap-2 rounded-full border border-slate-200/80 dark:border-slate-800/80 p-1 pr-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+              >
+                <div className="h-7 w-7 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt={user?.username || user?.email}
+                      className="h-full w-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <span className="text-[11px] font-bold uppercase text-slate-600 dark:text-slate-300">
+                      {user?.username?.charAt(0) || user?.email?.charAt(0) || "U"}
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 max-w-[100px] truncate">
+                  {user?.username || user?.email?.split("@")[0]}
+                </span>
+              </Link>
+
               <button
                 type="button"
                 onClick={handleLogout}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
-                title="Log Out"
+                aria-label="Log out"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 transition-colors"
               >
-                <LogOut size={16} />
+                <LogOut size={15} />
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <NavLink
+              <Link
                 to="/login"
-                className="px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white"
+                className="px-3.5 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900"
               >
                 Log In
-              </NavLink>
-              <NavLink
+              </Link>
+              <Link
                 to="/signup"
-                className="px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-colors"
+                className="rounded-full bg-blue-600 hover:bg-blue-700 px-4 py-1.5 text-xs font-bold text-white shadow-xs transition-colors"
               >
                 Sign Up
-              </NavLink>
+              </Link>
             </div>
           )}
         </div>
 
-        {/* Mobile controls */}
-        <div className="md:hidden flex items-center gap-2">
+        {/* Mobile Hamburger Toggle */}
+        <div className="flex items-center gap-2 md:hidden">
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300"
+            aria-label="Toggle theme"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400"
           >
-            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
           </button>
+
           <button
             type="button"
-            onClick={toggleMobileMenu}
-            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Open navigation menu"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400"
           >
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden flex flex-col gap-2 p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0F19]">
-          <NavLink
-            to="/"
-            onClick={closeMobileMenu}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-          >
-            <Compass size={16} /> Explore
-          </NavLink>
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0F19] px-4 pt-2 pb-4 space-y-1">
           {NAV_LINKS.map((link) => (
             <NavLink
-              key={link.label}
+              key={link.to}
               to={link.to}
-              end={link.to === "/dashboard"}
-              onClick={closeMobileMenu}
+              end={link.end}
+              onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) =>
-                `px-3.5 py-2 rounded-xl text-sm font-semibold ${
+                `block rounded-xl px-3 py-2 text-xs font-bold ${
                   isActive
-                    ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400"
-                    : "text-slate-700 dark:text-slate-300"
+                    ? "bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400"
+                    : "text-slate-600 dark:text-slate-400"
                 }`
               }
             >
               {link.label}
             </NavLink>
           ))}
-          {isAuthenticated && (
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-3.5 py-2 text-sm font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl text-left mt-2 border-t border-slate-200 dark:border-slate-800 pt-3"
-            >
-              <LogOut size={16} /> Log Out
-            </button>
-          )}
+
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
+            {isAuthenticated ? (
+              <div className="flex items-center justify-between pt-1">
+                <Link
+                  to="/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5"
+                >
+                  <div className="h-8 w-8 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                    {avatarUrl ? (
+                      <img
+                        src={avatarUrl}
+                        alt="Avatar"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-xs font-bold uppercase">
+                        {user?.username?.charAt(0) || user?.email?.charAt(0) || "U"}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                      {user?.username || "Account"}
+                    </p>
+                    <p className="text-[10px] text-slate-500">{user?.email}</p>
+                  </div>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="p-2 rounded-xl text-rose-600 dark:text-rose-400"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2 pt-1">
+                <Link
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center py-2 text-xs font-bold text-slate-700 dark:text-slate-300"
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/signup"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center py-2 rounded-xl bg-blue-600 text-xs font-bold text-white shadow-xs"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 };
 
