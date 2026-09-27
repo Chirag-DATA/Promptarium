@@ -9,19 +9,15 @@ import {
   Sun,
   Moon,
   LogOut,
-  FolderOpen,
-  Star,
-  Layers,
-  Settings as SettingsIcon,
-  Compass,
 } from "lucide-react";
 
+// Fixed: Point all links to the nested /dashboard/ routes
 const NAV_LINKS = [
   { to: "/dashboard", label: "Dashboard", end: true },
   { to: "/explore", label: "Explore" },
-  { to: "/prompts", label: "My Prompts" },
-  { to: "/favorites", label: "Favorites" },
-  { to: "/categories", label: "Categories" },
+  { to: "/dashboard/prompts", label: "My Prompts" },
+  { to: "/dashboard/favorites", label: "Favorites" },
+  { to: "/dashboard/categories", label: "Categories" },
 ];
 
 const Navbar = () => {
@@ -30,12 +26,33 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Support both full Cloudinary HTTPS URLs and local server paths
-  const avatarUrl = user?.profile_image_url
-    ? user.profile_image_url.startsWith("http")
-      ? user.profile_image_url
-      : `${import.meta.env.VITE_API_BASE_URL}${user.profile_image_url}`
-    : null;
+  // Safely resolve avatar URL whether Cloudinary, malformed, or local file
+  const getAvatarUrl = (url) => {
+    if (!url) return null;
+
+    let cleanUrl = url.trim();
+
+    // Fix missing colon if present ("https//res.cloudinary.com" -> "https://res.cloudinary.com")
+    if (cleanUrl.startsWith("https//")) {
+      cleanUrl = cleanUrl.replace("https//", "https://");
+    } else if (cleanUrl.startsWith("http//")) {
+      cleanUrl = cleanUrl.replace("http//", "http://");
+    }
+
+    // If it's a Cloudinary or external web URL, return it directly
+    if (cleanUrl.startsWith("http://") || cleanUrl.startsWith("https://") || cleanUrl.includes("cloudinary.com")) {
+      if (!cleanUrl.startsWith("http")) {
+        return `https://${cleanUrl.replace(/^\/+/, "")}`;
+      }
+      return cleanUrl;
+    }
+
+    // Otherwise, prepend the backend host for local disk uploads
+    const backendBase = import.meta.env.VITE_API_BASE_URL || "https://promptarium-backend.onrender.com";
+    return `${backendBase.replace(/\/$/, "")}/${cleanUrl.replace(/^\//, "")}`;
+  };
+
+  const avatarUrl = getAvatarUrl(user?.profile_image_url);
 
   const handleLogout = async () => {
     await logout();
@@ -90,7 +107,7 @@ const Navbar = () => {
           {isAuthenticated ? (
             <div className="flex items-center gap-2 pl-1">
               <Link
-                to="/settings"
+                to="/dashboard/settings"
                 className="flex items-center gap-2 rounded-full border border-slate-200/80 dark:border-slate-800/80 p-1 pr-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
               >
                 <div className="h-7 w-7 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700">
@@ -188,7 +205,7 @@ const Navbar = () => {
             {isAuthenticated ? (
               <div className="flex items-center justify-between pt-1">
                 <Link
-                  to="/settings"
+                  to="/dashboard/settings"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-2.5"
                 >
